@@ -2,7 +2,13 @@
 #define _STDES_H
 
 struct _ES_FICHIER;
-typedef struct _ES_FICHIER FICHIER;
+typedef struct _ES_FICHIER{
+    int descipteur; //descripteur du fichier
+    char mode;      // mode d'ouverture 'R' ou 'W'
+    char *buffer;   //buffer d'écriture ou de lecture
+    int index;      //index de l'octee a lir
+    int nbrOctets;  //nombre d'octets non lu dans le buffer
+} FICHIER;
 
 extern FICHIER *stdout;
 extern FICHIER *stderr;
