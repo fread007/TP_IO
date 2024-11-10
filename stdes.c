@@ -114,12 +114,12 @@ int ecrire(const void *p, unsigned int taille, unsigned int nbelem, FICHIER *f){
 
     //ont verifie que le buffer a assez de place pour les elements
     if(f->index + taille > TAILLE_BUFFER){
-        write(f->descipteur,f->buffer,f->nbrOctets - f->index); //ont ecrit le buffer
+        write(f->descipteur,f->buffer + f->index ,f->nbrOctets - f->index); //ont ecrit le buffer
         f->index = 0;
         f->nbrOctets = 0;
     }
 
-    //ont ecrit les elements
+    //ont ecrit les elements dans le buffer
     int ecrit = 0;
     while(ecrit < nbelem && f->index + taille <= TAILLE_BUFFER){    //tant que l'ont a pas ecrit tout les elements ou que l'ont a pas atteint la fin du buffer
         memcpy(&f->buffer[f->index],p+(ecrit*taille),taille);
@@ -134,11 +134,11 @@ int ecrire(const void *p, unsigned int taille, unsigned int nbelem, FICHIER *f){
 
 int vider(FICHIER *f){
     if(f == NULL || f->buffer == NULL || f->mode != 'E'){   //ont verifie que les entree sont valide
-        return 0;
+        return 1;
     }
 
     //ont ecrit le buffer
-    write(f->descipteur,f->buffer,f->nbrOctets - f->index);
+    write(f->descipteur,f->buffer,f->nbrOctets );
     f->index = 0;
     f->nbrOctets = 0;
 
