@@ -16,8 +16,8 @@ test-rand: test-rand.c
 	$(CC) $(FLAGS) -o test-rand test-rand.c stdes.c
 
 test: test.c
-	$(CC) $(FLAGS) -o test test.c stdes.h
+	$(CC) $(FLAGS) -o test test.c stdes.c
 
 clean:
-	rm -f eval-libc eval-syscall eval-test-format test-rand test
+	rm -f eval-libc eval-syscall test-format test-rand test
 
