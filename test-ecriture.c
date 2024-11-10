@@ -25,14 +25,14 @@ int main(int argc, char *argv[])
     
 	for(int i = 1; i < argc; i++){
 
-        fecriref(f1, "%c", 's');
+        ecriref("%c : %d , arg : %s", 's', i, argv[i]);
 
 
-        fecriref(f1, " ");
+        ecriref(" ");
         
     }
 
-    vider(f1);
+    vider(stdout);
     fermer (f1);
 
 	return 0;

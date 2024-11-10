@@ -209,7 +209,7 @@ int ecriref (const char *format, ...){
             format++;
             switch(*format){
                 case 'c':
-                    char actuel = va_arg(args, char);
+                    char actuel = (char) va_arg(args, int);
                     ecrire(&actuel, 1, 1, stdout);
                     nbr_ecrit++;
                     break;
