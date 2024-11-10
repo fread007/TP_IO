@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <fcntl.h> 
 #include "stdes.h"
+#include <stdarg.h>
 
 
 #define TAILLE_BUFFER 1000
@@ -146,11 +147,98 @@ int vider(FICHIER *f){
 }
 
 int fecriref (FICHIER *f, const char *format, ...){
-    return 0;
+    if (f == NULL || f->buffer == NULL || f->mode != 'E') {
+        return 1;
+    }
+
+    va_list args;
+    va_start(args, format);
+
+    
+    int nbr_ecrit = 0;
+    char buffer[10];
+
+    while(*format != '\0'){
+        if(*format == '%'){
+            format++;
+            switch(*format){
+                case 'c':
+                    char actuel = (char) va_arg(args, int);
+                    ecrire(&actuel, 1, 1, f);
+                    nbr_ecrit++;
+                    break;
+                case 's':
+                    char * string = va_arg( args, char * );
+                    while(*string != '\0'){
+                        ecrire(string, 1, 1, f);
+                        nbr_ecrit++;
+                        string++;
+                    }
+                    break;
+                case 'd':
+                    int i = va_arg(args, int);
+                    int length = snprintf(buffer, sizeof(buffer), "%d", i);
+                    ecrire(buffer, sizeof(char), length, f);
+                    nbr_ecrit += length;
+                    break;
+                default:
+                    return 1;
+            }
+        }
+        else{
+            ecrire(format, sizeof(char), 1, f);
+        }
+        format++;
+    }
+ 
+    va_end(args);
+    return nbr_ecrit;
 }
 /* directly in stdout */
 int ecriref (const char *format, ...){
-    return 0;
+
+    va_list args;
+    va_start(args, format);
+
+    
+    int nbr_ecrit = 0;
+    char buffer[10];
+
+    while(*format != '\0'){
+        if(*format == '%'){
+            format++;
+            switch(*format){
+                case 'c':
+                    char actuel = va_arg(args, char);
+                    ecrire(&actuel, 1, 1, stdout);
+                    nbr_ecrit++;
+                    break;
+                case 's':
+                    char * string = va_arg( args, char * );
+                    while(*string != '\0'){
+                        ecrire(string, 1, 1, stdout);
+                        nbr_ecrit++;
+                        string++;
+                    }
+                    break;
+                case 'd':
+                    int i = va_arg(args, int);
+                    int length = snprintf(buffer, sizeof(buffer), "%d", i);
+                    ecrire(buffer, sizeof(char), length, stdout);
+                    nbr_ecrit += length;
+                    break;
+                default:
+                    return 1;
+            }
+        }
+        else{
+            ecrire(format, sizeof(char), 1, stdout);
+        }
+        format++;
+    }
+
+    va_end(args);
+    return nbr_ecrit;
 }
 int fliref (FICHIER *f, const char *format, ...) {
     return 0;

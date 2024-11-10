@@ -25,10 +25,10 @@ int main(int argc, char *argv[])
     
 	for(int i = 1; i < argc; i++){
 
-        ecrire(argv[i], strlen(argv[i]), 1, f1);
+        fecriref(f1, "%c", 's');
 
 
-        ecrire(" ", 1, 1, f1);
+        fecriref(f1, " ");
         
     }
 
