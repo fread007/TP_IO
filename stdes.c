@@ -177,7 +177,7 @@ int fecriref (FICHIER *f, const char *format, ...){
                     break;
                 case 'd':
                     int i = va_arg(args, int);
-                    int length = snprintf(buffer, sizeof(buffer), "%d", i);
+                    int length = int_to_char(i,buffer);
                     ecrire(buffer, sizeof(char), length, f);
                     nbr_ecrit += length;
                     break;
@@ -223,7 +223,7 @@ int ecriref (const char *format, ...){
                     break;
                 case 'd':
                     int i = va_arg(args, int);
-                    int length = snprintf(buffer, sizeof(buffer), "%d", i);
+                    int length = int_to_char(i,buffer);
                     ecrire(buffer, sizeof(char), length, stdout);
                     nbr_ecrit += length;
                     break;
@@ -241,7 +241,13 @@ int ecriref (const char *format, ...){
     return nbr_ecrit;
 }
 int fliref (FICHIER *f, const char *format, ...) {
-    return 0;
+    if(f == NULL || f->buffer == NULL || f->mode != 'L'){   //ont verifie que les entree sont valide
+        return 0;
+    }
+
+    va_list args;
+    va_start(args,format);
+    
 }
 
 int fermer(FICHIER *f){
@@ -260,4 +266,28 @@ int fermer(FICHIER *f){
     free(f);
 
     return 0;
+}
+
+
+int int_to_char(int number, char* tab){
+    int p = number;
+    int compt = 10;
+    int size = 0;
+
+    if(number < 10){
+        tab[0] = 48 + number;
+        size += 1;
+        return size;
+    }
+    while(p != 0){
+        size += 1;
+        p = p/compt;
+        compt += 10;
+    }
+    p = number;
+    for(int i = size; i>0;i--){
+        tab[i-1]= (p%10) + 48;
+        p = p /10;
+    }
+    return size;
 }

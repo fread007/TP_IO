@@ -25,5 +25,7 @@ int fecriref (FICHIER *f, const char *format, ...);
 int ecriref (const char *format, ...);
 int fliref (FICHIER *f, const char *format, ...);
 
+int int_to_char(int number, char* tab);
+
 #endif
 

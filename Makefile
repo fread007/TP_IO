@@ -1,7 +1,7 @@
 CC = gcc
 FLAGS = -Wall -Werror
 
-all: eval-libc eval-syscall test-format test-rand test
+all: eval-libc eval-syscall test-format test-rand test test-ecriture
 
 eval-libc: eval-libc.c
 	$(CC) $(FLAGS) -o eval-libc eval-libc.c stdes.c
@@ -17,6 +17,9 @@ test-rand: test-rand.c
 
 test: test.c
 	$(CC) $(FLAGS) -o test test.c stdes.c
+
+test-ecriture: test-ecriture.c
+	$(CC) $(FLAGS) -o test-ecriture test-ecriture.c stdes.c
 
 clean:
 	rm -f eval-libc eval-syscall test-format test-rand test
