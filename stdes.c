@@ -266,7 +266,6 @@ int fliref (FICHIER *f, const char *format, ...) {
                     }
                 break;
                 case 's' :
-                    ecriref("la?\n");
                     vider(stdout);
                     char *s = va_arg(args, char *);
                     int i = 0;
@@ -281,14 +280,12 @@ int fliref (FICHIER *f, const char *format, ...) {
                     }
                     s[i] = '\0';
                     nbr_lecture++;
-                    ecriref("format : %c\n",*format);
                     if(lu == 0 || *format == '\0'){
                         return nbr_lecture;
                     }
                     flag = 1;
                 break;
                 case 'd' :
-                    ecriref("le nombre?\n");
                     int *integer = va_arg(args, int *);
                     char buffer[10];
                     lu = -1;
@@ -298,17 +295,11 @@ int fliref (FICHIER *f, const char *format, ...) {
                         ctr++;
                     }
                     while((lu = lire(&tmp, 1, 1, f)) == 1 &&  tmp <= '9' && tmp >= '0'){
-                        ecriref("tmp : %c\n",tmp);
-                        vider(stdout);
                         buffer[ctr] = tmp;
                         ctr++;
                     }
-                    ecriref("tmp : %c\n",tmp);
                     buffer[ctr] = '\0';
-                    ecriref("buffer : %s\n",buffer);
                     *integer = atoi(buffer);
-                    ecriref(" atoi: %d\n",atoi(buffer));
-                    ecriref("integer : %d\n",*integer);
                     nbr_lecture++;
                     if(lu == 0 || *format == '\0'){
                         return nbr_lecture;
@@ -328,16 +319,12 @@ int fliref (FICHIER *f, const char *format, ...) {
             else{
                 lire(&tmp, 1, 1, f);
             }
-            
-            ecriref("%c : %c\n",*format,tmp);
             if(tmp != *format){
-                ecriref("return 0\n");
                 return nbr_lecture;
             }
         }
         
         format++;
-        ecriref("format : %d\n",*format);
     }
 
 
