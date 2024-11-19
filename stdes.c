@@ -235,6 +235,8 @@ int ecriref (const char *format, ...){
     va_end(args);
     return nbr_ecrit;
 }
+
+
 int fliref (FICHIER *f, const char *format, ...) {
     
     va_list args;
@@ -244,15 +246,19 @@ int fliref (FICHIER *f, const char *format, ...) {
     int nbr_lecture = 0;
     char tmp;
     int lu = -1;
+    int flag = 0;
 
     while(*format != '\0'){
         if(*format == '%'){
             format++;
             switch(*format){
                 case 'c' :
-                    if(lire(&tmp, 1, 1, f) == 1){
-                        char *c = va_arg(args, char *);
+                    char *c = va_arg(args, char *);
+                    if(flag == 1){
                         *c = tmp;
+                        flag = 0;
+                    }
+                    else if(lire(&tmp, 1, 1, f) == 1){
                         nbr_lecture++;
                     }
                     else {
@@ -265,6 +271,10 @@ int fliref (FICHIER *f, const char *format, ...) {
                     char *s = va_arg(args, char *);
                     int i = 0;
                     lu = -1;
+                    if(flag == 1 && tmp != ' ' && tmp != '\n' && tmp != '\0' && tmp != '\t'){
+                        s[i] = tmp;
+                        i++;
+                    }
                     while((lu=lire(&tmp, 1, 1, f)) == 1 && tmp != ' ' && tmp != '\n' && tmp != '\0' && tmp != '\t'){
                         s[i] = tmp;
                         i++;
@@ -275,6 +285,7 @@ int fliref (FICHIER *f, const char *format, ...) {
                     if(lu == 0 || *format == '\0'){
                         return nbr_lecture;
                     }
+                    flag = 1;
                 break;
                 case 'd' :
                     ecriref("le nombre?\n");
@@ -282,6 +293,10 @@ int fliref (FICHIER *f, const char *format, ...) {
                     char buffer[10];
                     lu = -1;
                     int ctr = 0;
+                    if(flag == 1 && tmp <= '9' && tmp >= '0'){
+                        buffer[ctr] = tmp;
+                        ctr++;
+                    }
                     while((lu = lire(&tmp, 1, 1, f)) == 1 &&  tmp <= '9' && tmp >= '0'){
                         ecriref("tmp : %c\n",tmp);
                         vider(stdout);
@@ -298,6 +313,7 @@ int fliref (FICHIER *f, const char *format, ...) {
                     if(lu == 0 || *format == '\0'){
                         return nbr_lecture;
                     }
+                    flag = 1;
                     
                 break;
                 default:
@@ -306,13 +322,22 @@ int fliref (FICHIER *f, const char *format, ...) {
             }
         }
         else{
-            ecriref("ici?\n");
-            vider(stdout);
-            lire(&tmp, 1, 1, f);
+            if(flag == 1){
+                flag = 0;
+            }
+            else{
+                lire(&tmp, 1, 1, f);
+            }
+            
             ecriref("%c : %c\n",*format,tmp);
+            if(tmp != *format){
+                ecriref("return 0\n");
+                return nbr_lecture;
+            }
         }
         
         format++;
+        ecriref("format : %d\n",*format);
     }
 
 
