@@ -6,7 +6,7 @@
 #include <stdarg.h>
 
 
-#define TAILLE_BUFFER 1000
+#define TAILLE_BUFFER 10
 
 __attribute__((constructor)) void init(){
     stdout = malloc(sizeof(FICHIER));
@@ -115,7 +115,7 @@ int ecrire(const void *p, unsigned int taille, unsigned int nbelem, FICHIER *f){
 
     //ont verifie que le buffer a assez de place pour les elements
     if(f->index + taille > TAILLE_BUFFER){
-        write(f->descipteur,f->buffer + f->index ,f->nbrOctets - f->index); //ont ecrit le buffer
+        write(f->descipteur,f->buffer ,f->nbrOctets); //ont ecrit le buffer
         f->index = 0;
         f->nbrOctets = 0;
     }
@@ -241,12 +241,7 @@ int ecriref (const char *format, ...){
     return nbr_ecrit;
 }
 int fliref (FICHIER *f, const char *format, ...) {
-    if(f == NULL || f->buffer == NULL || f->mode != 'L'){   //ont verifie que les entree sont valide
-        return 0;
-    }
-
-    va_list args;
-    va_start(args,format);
+    return 0;
     
 }
 
