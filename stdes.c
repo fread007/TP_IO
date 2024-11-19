@@ -6,7 +6,7 @@
 #include <stdarg.h>
 
 
-#define TAILLE_BUFFER 10
+#define TAILLE_BUFFER 1000
 
 __attribute__((constructor)) void init(){
     stdout = malloc(sizeof(FICHIER));
@@ -66,7 +66,6 @@ FICHIER *ouvrir(const char *nom, char mode){
 }
 
 int lire(void *p, unsigned int taille, unsigned int nbelem, FICHIER *f){
-    int truc = open("fichierla", O_WRONLY | O_CREAT | O_TRUNC, 0666);
     if(f == NULL || f->buffer == NULL || f->mode != 'L'){   //ont verifie que les entree sont valide
         return 0;
     }
@@ -80,7 +79,6 @@ int lire(void *p, unsigned int taille, unsigned int nbelem, FICHIER *f){
         tmp = read(f->descipteur,&f->buffer[f->nbrOctets],TAILLE_BUFFER - f->nbrOctets);
         if(tmp > 0){
             f->nbrOctets += tmp;
-            write(truc,"POURQUOI",8);
         }
         while(f->nbrOctets != TAILLE_BUFFER && tmp>0){
             tmp = read(f->descipteur,&f->buffer[f->nbrOctets],TAILLE_BUFFER - f->nbrOctets);
@@ -93,9 +91,6 @@ int lire(void *p, unsigned int taille, unsigned int nbelem, FICHIER *f){
 
     //lecture des elements
     int lu = 0;
-    if(f->nbrOctets == 0){
-        write(truc,"la",2);
-    }
     while(lu < nbelem && f->index + taille <= f->nbrOctets){    //tant que l'ont a pas lu tout les elements ou que l'ont a pas atteint la fin du buffer
         
         memcpy(p+lu,&f->buffer[f->index],taille);
@@ -241,7 +236,88 @@ int ecriref (const char *format, ...){
     return nbr_ecrit;
 }
 int fliref (FICHIER *f, const char *format, ...) {
-    return 0;
+    
+    va_list args;
+    va_start(args, format);
+
+    
+    int nbr_lecture = 0;
+    char tmp;
+    int lu = -1;
+
+    while(*format != '\0'){
+        if(*format == '%'){
+            format++;
+            switch(*format){
+                case 'c' :
+                    if(lire(&tmp, 1, 1, f) == 1){
+                        char *c = va_arg(args, char *);
+                        *c = tmp;
+                        nbr_lecture++;
+                    }
+                    else {
+                        return nbr_lecture;
+                    }
+                break;
+                case 's' :
+                    ecriref("la?\n");
+                    vider(stdout);
+                    char *s = va_arg(args, char *);
+                    int i = 0;
+                    lu = -1;
+                    while((lu=lire(&tmp, 1, 1, f)) == 1 && tmp != ' ' && tmp != '\n' && tmp != '\0' && tmp != '\t'){
+                        s[i] = tmp;
+                        i++;
+                    }
+                    s[i] = '\0';
+                    nbr_lecture++;
+                    ecriref("format : %c\n",*format);
+                    if(lu == 0 || *format == '\0'){
+                        return nbr_lecture;
+                    }
+                break;
+                case 'd' :
+                    ecriref("le nombre?\n");
+                    int *integer = va_arg(args, int *);
+                    char buffer[10];
+                    lu = -1;
+                    int ctr = 0;
+                    while((lu = lire(&tmp, 1, 1, f)) == 1 &&  tmp <= '9' && tmp >= '0'){
+                        ecriref("tmp : %c\n",tmp);
+                        vider(stdout);
+                        buffer[ctr] = tmp;
+                        ctr++;
+                    }
+                    ecriref("tmp : %c\n",tmp);
+                    buffer[ctr] = '\0';
+                    ecriref("buffer : %s\n",buffer);
+                    *integer = atoi(buffer);
+                    ecriref(" atoi: %d\n",atoi(buffer));
+                    ecriref("integer : %d\n",*integer);
+                    nbr_lecture++;
+                    if(lu == 0 || *format == '\0'){
+                        return nbr_lecture;
+                    }
+                    
+                break;
+                default:
+                    return 1;
+                
+            }
+        }
+        else{
+            ecriref("ici?\n");
+            vider(stdout);
+            lire(&tmp, 1, 1, f);
+            ecriref("%c : %c\n",*format,tmp);
+        }
+        
+        format++;
+    }
+
+
+    va_end(args);
+    return nbr_lecture;
     
 }
 
@@ -266,7 +342,6 @@ int fermer(FICHIER *f){
 
 int int_to_char(int number, char* tab){
     int p = number;
-    int compt = 10;
     int size = 0;
 
     if(number < 10){
@@ -276,8 +351,7 @@ int int_to_char(int number, char* tab){
     }
     while(p != 0){
         size += 1;
-        p = p/compt;
-        compt += 10;
+        p = p/10;
     }
     p = number;
     for(int i = size; i>0;i--){

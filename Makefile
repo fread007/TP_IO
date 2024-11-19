@@ -1,7 +1,7 @@
 CC = gcc
 FLAGS = -Wall -Werror
 
-all: eval-libc eval-syscall test-format test-rand test test-ecriture test-buffer
+all: eval-libc eval-syscall test-format test-rand test test-ecriture test-buffer test-lecture
 
 eval-libc: eval-libc.c
 	$(CC) $(FLAGS) -o eval-libc eval-libc.c stdes.c
@@ -21,9 +21,12 @@ test: test.c
 test-ecriture: test_ecriture.c
 	$(CC) $(FLAGS) -o test_ecriture test_ecriture.c stdes.c
 
+test-lecture: test_lecture.c
+	$(CC) $(FLAGS) -o test_lecture test_lecture.c stdes.c
+
 test-buffer: test_buffer.c
 	$(CC) $(FLAGS) -o test_buffer test_buffer.c stdes.c
 
 clean:
-	rm -f eval-libc eval-syscall test-format test-rand test
+	rm -f eval-libc eval-syscall test-format test-rand test test_ecriture test_lecture test_buffer
 
