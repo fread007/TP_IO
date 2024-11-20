@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     int i;
     //int j =0;
 
-    FICHIER *f1 = ouvrir("TEST/test.txt", 'L');
+    FICHIER *f1 = ouvrir("TEST/donnee_test_lecture.txt", 'L');
     if (f1 == NULL){
         exit (-1);
     }

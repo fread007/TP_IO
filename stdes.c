@@ -172,7 +172,7 @@ int fecriref (FICHIER *f, const char *format, ...){
                     break;
                 case 'd':
                     int i = va_arg(args, int);
-                    int length = int_to_char(i,buffer);
+                    int length = int_to_string(i,buffer);
                     ecrire(buffer, sizeof(char), length, f);
                     nbr_ecrit += length;
                     break;
@@ -218,7 +218,7 @@ int ecriref (const char *format, ...){
                     break;
                 case 'd':
                     int i = va_arg(args, int);
-                    int length = int_to_char(i,buffer);
+                    int length = int_to_string(i,buffer);
                     ecrire(buffer, sizeof(char), length, stdout);
                     nbr_ecrit += length;
                     break;
@@ -352,7 +352,7 @@ int fermer(FICHIER *f){
 }
 
 
-int int_to_char(int number, char* tab){
+int int_to_string(int number, char* tab){
     int p = number;
     int size = 0;
 
