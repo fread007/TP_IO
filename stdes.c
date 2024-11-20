@@ -186,6 +186,7 @@ int fecriref (FICHIER *f, const char *format, ...){
         else{
             //Cas où on traite un caractère simple
             ecrire(format, sizeof(char), 1, f);
+            nbr_ecrit ++;
         }
         format++;
     }
@@ -237,6 +238,7 @@ int ecriref (const char *format, ...){
         else{
             //Cas où on traite un caractère simple
             ecrire(format, sizeof(char), 1, stdout);
+            nbr_ecrit ++;
         }
         format++;
     }
