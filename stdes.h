@@ -3,10 +3,10 @@
 
 struct _ES_FICHIER;
 typedef struct _ES_FICHIER{
-    int descipteur; //descripteur du fichier
+    int descripteur; //descripteur du fichier
     char mode;      // mode d'ouverture 'R' ou 'W'
     char *buffer;   //buffer d'écriture ou de lecture
-    int index;      //index de l'octee a lir
+    int index;      //index de l'octets a lire
     int nbrOctets;  //nombre d'octets non lu dans le buffer
 } FICHIER;
 

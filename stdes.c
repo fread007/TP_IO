@@ -11,8 +11,8 @@
 __attribute__((constructor)) void init(){
     stdout = malloc(sizeof(FICHIER));
     stderr = malloc(sizeof(FICHIER));
-    stdout->descipteur = 1;
-    stderr->descipteur = 2;
+    stdout->descripteur = 1;
+    stderr->descripteur = 2;
     stdout->mode = 'E';
     stderr->mode = 'E';
     stdout->buffer = malloc(TAILLE_BUFFER);
@@ -37,13 +37,13 @@ FICHIER *ouvrir(const char *nom, char mode){
 
     //On ouvre le fichier avec le bon mode
     if(mode == 'E'){
-        f->descipteur = open(nom,O_WRONLY | O_CREAT | O_TRUNC, 0666);
+        f->descripteur = open(nom,O_WRONLY | O_CREAT | O_TRUNC, 0666);
     }
     else{
-        f->descipteur = open(nom,O_RDONLY);
+        f->descripteur = open(nom,O_RDONLY);
     }
      //On vérifie si le fichier a bien été ouvert
-    if(f->descipteur == -1){
+    if(f->descripteur == -1){
         free(f);
         return NULL;
     }
@@ -52,7 +52,7 @@ FICHIER *ouvrir(const char *nom, char mode){
     f->buffer = malloc(TAILLE_BUFFER);
     //On vérifie que la mémoire a bien été allouée
     if(f->buffer == NULL){
-        close(f->descipteur);
+        close(f->descripteur);
         free(f);
         return NULL;
     }
@@ -76,12 +76,12 @@ int lire(void *p, unsigned int taille, unsigned int nbelem, FICHIER *f){
         f->nbrOctets = f->nbrOctets - f->index; //On met à jour le nombre d'octets non lus
         //On remplit le reste du buffer
         int tmp = 0 ;
-        tmp = read(f->descipteur,&f->buffer[f->nbrOctets],TAILLE_BUFFER - f->nbrOctets);
+        tmp = read(f->descripteur,&f->buffer[f->nbrOctets],TAILLE_BUFFER - f->nbrOctets);
         if(tmp > 0){
             f->nbrOctets += tmp;
         }
         while(f->nbrOctets != TAILLE_BUFFER && tmp>0){
-            tmp = read(f->descipteur,&f->buffer[f->nbrOctets],TAILLE_BUFFER - f->nbrOctets);
+            tmp = read(f->descripteur,&f->buffer[f->nbrOctets],TAILLE_BUFFER - f->nbrOctets);
             if(tmp > 0){
                 f->nbrOctets += tmp;
             } 
@@ -110,7 +110,7 @@ int ecrire(const void *p, unsigned int taille, unsigned int nbelem, FICHIER *f){
 
     //On vérifie que le buffer a assez de place pour les éléments
     if(f->index + taille > TAILLE_BUFFER){
-        write(f->descipteur,f->buffer ,f->nbrOctets); //On écrit le contenu du buffer
+        write(f->descripteur,f->buffer ,f->nbrOctets); //On écrit le contenu du buffer
         f->index = 0;
         f->nbrOctets = 0;
     }
@@ -134,7 +134,7 @@ int vider(FICHIER *f){
     }
 
     //On écrit le contenu du buffer
-    write(f->descipteur,f->buffer,f->nbrOctets );
+    write(f->descripteur,f->buffer,f->nbrOctets );
     f->index = 0;
     f->nbrOctets = 0;
 
